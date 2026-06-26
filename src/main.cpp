@@ -8,6 +8,7 @@
 #include <time.h>
 #include "SPIFFS.h"
 #include <Update.h>
+#include "esp_ota_ops.h"
 
 // ─── CONFIG ────────────────────────────────────────────────────────────────
 
@@ -422,19 +423,31 @@ void setupWebServer() {
   // OTA firmware update
   server.on("/api/ota", HTTP_POST,
     [](AsyncWebServerRequest *request) {
-      request->send(200);
+      bool ok = !Update.hasError();
+      request->send(ok ? 200 : 500, "text/plain", ok ? "OTA OK" : "OTA FAILED");
+      if (ok) {
+        Serial.println("OTA success — restarting...");
+        delay(100);
+        ESP.restart();
+      }
     },
     [](AsyncWebServerRequest *request, String filename, size_t index,
        uint8_t *data, size_t len, bool final) {
         if (!index) {
           Serial.printf("OTA Start: %s\n", filename.c_str());
-          Update.begin(UPDATE_SIZE_UNKNOWN);
+          if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
+            Update.printError(Serial);
+          }
         }
-        Update.write(data, len);
+        if (Update.write(data, len) != len) {
+          Update.printError(Serial);
+        }
         if (final) {
-          Serial.printf("OTA End: %u bytes\n", index + len);
-          Update.end(true);
-          ESP.restart();
+          if (Update.end(true)) {
+            Serial.printf("OTA End: %u bytes OK\n", index + len);
+          } else {
+            Update.printError(Serial);
+          }
         }
     }
   );
@@ -447,6 +460,18 @@ void setupWebServer() {
 void setup() {
   Serial.begin(115200);
   Serial.printf("\n\n=== Irrigation Controller v%s ===\n", FIRMWARE_VERSION);
+
+  // Po OTA pierwszy boot jest "pending verify" — potwierdź obraz, by uniknąć
+  // automatycznego rollbacku przy następnym restarcie.
+  {
+    const esp_partition_t *running = esp_ota_get_running_partition();
+    esp_ota_img_states_t state;
+    if (esp_ota_get_state_partition(running, &state) == ESP_OK &&
+        state == ESP_OTA_IMG_PENDING_VERIFY) {
+      Serial.println("  OTA pending verify — oznaczam obraz jako poprawny");
+      esp_ota_mark_app_valid_cancel_rollback();
+    }
+  }
 
   for (uint8_t i = 0; i < ZONE_COUNT; i++) {
     pinMode(RELAY_PINS[i], OUTPUT);
