@@ -62,13 +62,9 @@ web/node_modules/
 web/build/
 web/dist/
 web/package-lock.json
-firmware/web/node_modules/
-firmware/web/build/
-firmware/web/dist/
-firmware/web/package-lock.json
 
-# Data build artifacts
-data/build/
+# Data
+data/
 
 # Python
 *.pyc
