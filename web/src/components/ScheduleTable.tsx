@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import type { Schedule } from "../types";
 
 const DAYS_SHORT = ["N", "P", "W", "Ś", "C", "P", "S"];
