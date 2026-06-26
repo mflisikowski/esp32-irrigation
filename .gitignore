@@ -1,0 +1,76 @@
+# macOS
+.DS_Store
+
+# Editors
+.opencode/
+.zed/
+.idea/
+.vscode/
+firmware/.opencode/
+firmware/.zed/
+firmware/.idea/
+firmware/.vscode/
+
+# CodeGraph
+.codegraph/
+
+# OpenCode sessions
+.omo/
+
+# Installed skills (managed by skills CLI)
+.agents/
+
+# Skills lock
+skills-lock.json
+
+# Node (pnpm init - not firmware code)
+package.json
+pnpm-lock.yaml
+node_modules/
+
+# PlatformIO build artifacts (root)
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# PlatformIO build artifacts (firmware/)
+firmware/.pio/
+firmware/.pioenvs/
+firmware/.piolibdeps/
+firmware/build/
+firmware/managed_components/
+firmware/sdkconfig
+firmware/sdkconfig.old
+firmware/dependencies.lock
+
+# Compiled binaries
+*.elf
+*.bin
+*.hex
+*.map
+
+# BMAD artifacts
+_bmad/
+_bmad-output/
+firmware/_bmad/
+
+# Claude skills (managed, not source)
+firmware/.claude/
+
+# Web app (Vite build)
+web/node_modules/
+web/build/
+web/dist/
+web/package-lock.json
+firmware/web/node_modules/
+firmware/web/build/
+firmware/web/dist/
+firmware/web/package-lock.json
+
+# Data build artifacts
+data/build/
+
+# Python
+*.pyc
+__pycache__/
+*.pyo
