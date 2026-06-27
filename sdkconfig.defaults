@@ -1,0 +1,39 @@
+# ─── Target ──────────────────────────────────────────────────────────────────
+# Dual-target: choose the chip per board with `idf.py set-target esp32c6`
+# (intended target hardware) or `idf.py set-target esp32` (classic ESP32 dev
+# board). GPIO pins are selected per target in main/zones.c. Not hardcoded here
+# so set-target controls it cleanly.
+
+# ─── Flash / partition table ────────────────────────────────────────────────
+# Use the existing OTA-capable 4MB layout in partitions.csv (kept as-is).
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+CONFIG_PARTITION_TABLE_FILENAME="partitions.csv"
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="4MB"
+
+# ─── HTTP server (WP3) ──────────────────────────────────────────────────────
+# Wildcard URI matching ( /api/zone/*, static /* ) needs longer URIs and a few
+# more header bytes. NOTE: max_uri_handlers is a RUNTIME field of httpd_config_t
+# (set by web_server.c), not a Kconfig symbol — there is no CONFIG_HTTPD_MAX_URI_HANDLERS.
+CONFIG_HTTPD_MAX_REQ_HDR_LEN=1024
+CONFIG_HTTPD_MAX_URI_LEN=512
+CONFIG_HTTPD_PURGE_BUF_LEN=64
+
+# ─── SPIFFS ─────────────────────────────────────────────────────────────────
+CONFIG_SPIFFS_PAGE_SIZE=256
+
+# ─── LWIP / TCP (responsive web UI) ─────────────────────────────────────────
+# More sockets so a browser's parallel connections + the SSE socket don't starve
+# the httpd pool; larger TCP send buffer/window so the ~246 KB JS bundle streams
+# quickly instead of dribbling out in tiny windows.
+CONFIG_LWIP_MAX_SOCKETS=16
+CONFIG_LWIP_TCP_SND_BUF_DEFAULT=23360
+CONFIG_LWIP_TCP_WND_DEFAULT=23360
+
+# ─── FreeRTOS / watchdog ────────────────────────────────────────────────────
+# Loop task does periodic work with vTaskDelay; keep the task WDT lenient.
+CONFIG_ESP_TASK_WDT_TIMEOUT_S=10
+
+# ─── Logging ────────────────────────────────────────────────────────────────
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y

@@ -1,0 +1,12 @@
+## Managed component dependencies.
+## All firmware deps (esp-mqtt, cJSON/json, spiffs, esp_http_server, esp_wifi,
+## app_update, nvs_flash, esp_netif, esp_event, driver, esp_timer) ship inside
+## core ESP-IDF v5.3, so no external managed components are required for WP1
+## or the sibling packages (WiFi/time, HTTP, MQTT). Kept as a valid minimal
+## manifest; add entries under `dependencies:` only if a sibling needs one.
+dependencies:
+  idf:
+    version: ">=5.3"
+  # mDNS responder — advertises the controller as "irrigation.local" so the web
+  # UI is reachable by name regardless of the DHCP-assigned IP (used in wifi_mgr).
+  espressif/mdns: "^1.2"

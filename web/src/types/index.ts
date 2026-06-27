@@ -24,4 +24,7 @@ export interface SystemInfo {
 	heap: number;
 	mqtt: boolean;
 	rain: boolean;
+	wifiMode: "STA" | "AP";
+	ip: string;
+	ssid: string;
 }

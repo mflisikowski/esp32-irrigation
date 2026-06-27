@@ -60,7 +60,9 @@ function App() {
 			<Header info={info} />
 			<ZoneGrid zones={zones} onCommand={handleCommand} onRun={handleRun} />
 			<StatusBar />
-			<ScheduleTable schedule={schedule} onSave={handleSave} />
+			{schedule.length > 0 && (
+				<ScheduleTable schedule={schedule} onSave={handleSave} />
+			)}
 			<OtaUpload />
 		</div>
 	);

@@ -1,72 +1,36 @@
-# macOS
-.DS_Store
+# ── ESP-IDF (firmware) ───────────────────────────────────────────────────────
+# build/ i managed_components/ są regenerowane przez idf.py; sdkconfig jest
+# generowany z sdkconfig.defaults (per-maszyna).
+build/
+managed_components/
+sdkconfig
+sdkconfig.old
 
-# Editors
-.opencode/
-.zed/
-.idea/
-.vscode/
-firmware/.opencode/
-firmware/.zed/
-firmware/.idea/
-firmware/.vscode/
+# ── Web UI (Vite / Node) ─────────────────────────────────────────────────────
+web/node_modules/
+web/build/
+web/dist/
 
-# CodeGraph
-.codegraph/
+# ── Obraz SPIFFS (generowany z web/build przez web_build) ─────────────────────
+# Per CLAUDE.md: data/ to wynik builda web UI, nie edytować ręcznie.
+data/
 
-# OpenCode sessions
-.omo/
-
-# Installed skills (managed by skills CLI)
-.agents/
-
-# Skills lock
-skills-lock.json
-
-# Node (pnpm init - not firmware code)
-package.json
-pnpm-lock.yaml
-node_modules/
-
-# PlatformIO build artifacts (root)
+# ── PlatformIO (pozostałości po migracji z Arduino) ──────────────────────────
 .pio/
 .pioenvs/
 .piolibdeps/
 
-# PlatformIO build artifacts (firmware/)
-firmware/.pio/
-firmware/.pioenvs/
-firmware/.piolibdeps/
-firmware/build/
-firmware/managed_components/
-firmware/sdkconfig
-firmware/sdkconfig.old
-firmware/dependencies.lock
-
-# Compiled binaries
-*.elf
-*.bin
-*.hex
-*.map
-
-# BMAD artifacts
+# ── Narzędzia agentowe / sesje (lokalne, nie część projektu) ─────────────────
+.agents/
+skills-lock.json
+.opencode/
+.omo/
+.cache/
 _bmad/
 _bmad-output/
-firmware/_bmad/
 
-# Claude skills (managed, not source)
-firmware/.claude/
-
-# Web app (Vite build)
-web/node_modules/
-web/build/
-web/dist/
-web/package-lock.json
-
-# Data
-data/
-
-# Python
-*.pyc
-__pycache__/
-*.pyo
+# ── Edytory / OS ─────────────────────────────────────────────────────────────
+.DS_Store
+.vscode/
+.idea/
+.zed/

@@ -1,6 +1,6 @@
 # 💧 System Nawodnienia Ogrodu — ESP32
 
-Automatyczne nawadnianie ogrodu sterowane ESP32 z panelem webowym i integracją Home Assistant (MQTT).
+Automatyczne nawadnianie ogrodu sterowane ESP32-C6 (firmware **natywny ESP-IDF**, czyste C) z panelem webowym React i integracją MQTT.
 
 ## Strefy
 
@@ -35,25 +35,35 @@ Automatyczne nawadnianie ogrodu sterowane ESP32 z panelem webowym i integracją 
 
 ## Instalacja firmware
 
-1. Zainstaluj [PlatformIO](https://platformio.org/) (lub [Arduino IDE](https://www.arduino.cc/en/software/))
-2. Otwórz folder `firmware/`
-3. Skonfiguruj MQTT i strefy w `src/main.cpp` (sekcja `DEFAULT_CONFIG`)
-4. Podłącz ESP32 przez USB
-5. Kompiluj i wgraj: `pio run -t upload` lub upload przez Arduino IDE
-6. Monitor: `pio device monitor` (115200 baud)
+Firmware to natywny projekt **ESP-IDF** (v5.3+) w czystym C; budowany przez `idf.py`.
+Pliki źródłowe leżą w katalogu **głównym repo** (`main/`), nie w `firmware/`.
+
+1. Zainstaluj [ESP-IDF v5.3+](https://docs.espressif.com/projects/esp-idf/en/v5.3/esp32c6/get-started/index.html)
+   i załaduj środowisko: `. $HOME/esp/esp-idf/export.sh`
+2. Skonfiguruj domyślne strefy/MQTT w `main/app_config.c` (sekcja `DEFAULT_CONFIG`)
+3. Ustaw target i zbuduj: `idf.py set-target esp32c6 && idf.py build`
+   (build automatycznie buduje też frontend React w `web/` i obraz SPIFFS z `data/`)
+4. Podłącz ESP32-C6 przez USB
+5. Wgraj firmware + SPIFFS i podglądaj logi: `idf.py -p <PORT> flash monitor` (115200 baud)
+
+> Frontend React (`web/`) wymaga jednorazowo `npm install` w `web/` przed pierwszym buildem.
+
+> **Skróty:** zamiast pamiętać komendy `idf.py`, użyj `Makefile` w katalogu głównym —
+> `make help` pokazuje wszystko, `make run` = build + flash + monitor, `make ota` = aktualizacja
+> przez sieć, `make verify` = sprawdzenie połączenia WiFi. Pełny opis flow: **[docs/FLASHING.md](docs/FLASHING.md)**.
 
 ### Pierwsze uruchomienie
 1. ESP32 utworzy hotspot WiFi `Nawodnienie-AP`
 2. Połącz się z nim i skonfiguruj domową sieć WiFi
 3. ESP32 zrestartuje się i poda IP w monitorze szeregowym
-4. Otwórz IP w przeglądarce
+4. Otwórz `http://irrigation.local` (mDNS) lub podane IP w przeglądarce
 
 ## Funkcje firmware
 
 - **Panel webowy** — sterowanie manualne, timer, status
 - **Harmonogram** — 6 stref, dni tygodnia, godzina startu, czas podlewania
 - **Czujnik deszczu** — automatyczne wyłączenie przy deszczu
-- **MQTT** — integracja z Home Assistant (auto-discovery)
+- **MQTT** — sterowanie i status stref przez topiki (bez auto-discovery)
 - **NTP** — synchronizacja czasu
 - **SSE** — live status na stronie (bez odświeżania)
 - **Ochrona** — watchdog, max czas strefy, rain override
@@ -71,17 +81,22 @@ Automatyczne nawadnianie ogrodu sterowane ESP32 z panelem webowym i integracją 
 | `/api/zone/{id}/command?action=run&seconds=300` | GET | Uruchom na X sekund |
 | `/api/all/off` | GET | Wyłącz wszystko |
 | `/api/save` | POST | Zapisz harmonogram (body: JSON) |
-| `/api/info` | GET | System info |
+| `/api/info` | GET | System info (wersja, czas, `wifiMode`, `ip`, `ssid`, heap, mqtt, rain) |
+| `/api/wifi` | POST | Zmiana WiFi (body `{ssid,pass}`) → zapis + restart |
+| `/api/ota` | POST | Aktualizacja firmware przez sieć (body: surowy `.bin`) |
 
-## MQTT Home Assistant
+## MQTT
 
-Auto-discovery topics:
+Bazowy topik konfigurowalny (`mqttTopic`, domyślnie `irrigation`). **Bez** Home Assistant
+auto-discovery — urządzenia trzeba dodać ręcznie. Topiki:
 
-| Topic | Typ | Opis |
-|-------|-----|------|
-| `irrigation/zone/{id}/status` | switch | Stan strefy |
-| `irrigation/zone/{id}/command` | command | Sterowanie |
-| `irrigation/rain` | binary_sensor | Czujnik deszczu |
+| Topic | Kierunek | Opis |
+|-------|----------|------|
+| `<topic>/zone/{id}/command` | sub | Sterowanie (`ON`/`OFF`) |
+| `irrigation/all/command` | sub | `OFF` = wyłącz wszystkie strefy |
+| `<topic>/zone/{id}/status` | pub (retained) | Stan strefy (`ON`/`OFF`) |
+| `<topic>/zone/{id}/duration` | pub (retained) | Czas podlewania (s) |
+| `irrigation/rain` | pub (retained) | Czujnik deszczu (`RAIN`/`DRY`) |
 
 ## Etapy montażu
 

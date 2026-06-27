@@ -1,4 +1,0 @@
-# no_ota.csv — single app partition, no OTA (safety net)
-nvs,      data, nvs,      0x9000,   0x5000
-app0,     app,  factory,  0x10000,  0x300000
-spiffs,   data, spiffs,   0x310000, 0xE0000
