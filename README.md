@@ -328,6 +328,9 @@ Uwaga: brak auto-discovery (np. Home Assistant). Urządzenia trzeba dodać ręcz
 |------------|-------|--------|
 | **Mikrokontroler** | ESP32-C6 DevKit (USB-C) | [Allegro](https://allegro.pl/oferta/modul-esp32-c6-mikrokontroler-wifi-6-zigbee-thread-ble-5-0-do-arduino-usb-c-18545765691) |
 | **Moduł przekaźnika** | 8-Kanałowy, 5V, 10A, Active LOW | [Allegro](https://allegro.pl/oferta/modul-8-kanalowy-5v-10a-przekaznik-sterowany-stanem-niskim-0v-do-arduino-11435635416) |
+| **Skrzynka zaworowa** | Jumbo 14" na 6 elektrozaworów | [Allegro](https://allegro.pl/oferta/skrzynka-studzienka-zaworowa-jumbo-14-6-elek-10549516399) |
+| **Dysze rotacyjne** | Rain Bird R-VAN24 (45°–270°, 5,2–7,3m) | [Allegro](https://allegro.pl/oferta/dysza-rotacyjna-rain-bird-r-van-24-kat-regulowany-45-270-promien-5-2m-7-3m-12737230494) |
+| **Kolektor** | Rain Bird HV-100 (6 sekcji + filtr + kompresor) | [Allegro](https://allegro.pl/oferta/kolektor-rain-bird-6-sekcji-hv-100-z-filtrem-i-kompresorem-rura-pe-25-17512626898) |
 
 ### ESP32-C6 DevKit — specyfikacja
 
@@ -539,6 +542,7 @@ Nadpisywalne zmienne:
 | Plik | Opis |
 |------|------|
 | `hardware-docs/ESP32-C6-Relay-8CH-Documentation.md` | Dokumentacja sprzętu (ESP32-C6 + przekaźnik) |
+| `hardware-docs/Sprzet-Nawadniania-Documentation.md` | Dokumentacja sprzętu (skrzynka Jumbo, dysze R-VAN24, kolektor HV-100) |
 | `docs/FLASHING.md` | Szczegółowy przewodnik wgrywania |
 | `docs/schematics.md` | Schemat połączeń |
 | `docs/PLAN.md` | Plan rozwoju |
